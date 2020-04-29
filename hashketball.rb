@@ -127,3 +127,89 @@ def game_hash
 end
 
 # Write code here
+
+# helper functions
+
+def find_team_of_player(player)
+  game_hash.values.find { |team| 
+    team[:players]
+      .collect{ |player_stats| player_stats[:player_name] }
+      .include?(player)
+  }
+end
+
+def player_stats(player)
+  team = find_team_of_player(player)
+  team[:players].find { |player_stats| player_stats.has_value?(player) }
+end
+
+def find_team_by_name(team)
+  game_hash.values.find { |team_info| team_info.has_value?(team) }
+end
+
+def all_players
+  all_players = game_hash.values.collect { |team| team[:players] }
+  all_players = all_players[0].concat(all_players[1])
+end
+
+# main functions
+
+def num_points_scored(player)
+  player_stats(player)[:points]
+end
+
+def shoe_size(player)
+  player_stats(player)[:shoe]
+end
+
+def team_colors(team)
+  find_team_by_name(team)[:colors]
+end
+
+def team_names 
+  game_hash.values.collect { |team| team[:team_name] }
+end
+
+def player_numbers(team)
+  find_team_by_name(team)[:players].collect { |player| player[:number] }
+end
+
+def big_shoe_rebounds
+  all_players
+    .sort_by { |player_stats| player_stats[:shoe] }
+    .last[:rebounds]
+end
+
+# Bonus questions
+
+def most_points_scored
+  all_players
+    .sort_by{ |player_stats| player_stats[:points] }
+    .last[:player_name]
+end
+
+def winning_team
+ game_hash.values
+  .collect { |team_stats| 
+    { 
+      team_name: team_stats[:team_name],
+      points: team_stats[:players].reduce(0) { |memo, player_stats| 
+        memo +  player_stats[:points]
+      }
+    }
+  }
+  .sort_by { |team| team[:points] }
+  .last[:team_name]
+end
+
+def player_with_longest_name
+  all_players
+    .sort { |a, b| a[:player_name].length <=> b[:player_name].length }
+    .last[:player_name]
+end
+
+def long_name_steals_a_ton?
+  all_players
+    .sort { |a, b| a[:steals] <=> b[:steals] }
+    .last[:player_name] == player_with_longest_name
+end
