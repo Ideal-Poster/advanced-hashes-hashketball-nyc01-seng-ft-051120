@@ -180,6 +180,8 @@ def big_shoe_rebounds
     .last[:rebounds]
 end
 
+# Bonus questions
+
 def most_points_scored
   all_players
     .sort_by{ |player_stats| player_stats[:points] }
