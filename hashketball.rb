@@ -127,3 +127,50 @@ def game_hash
 end
 
 # Write code here
+
+def find_team_of_player(player)
+  game_hash.values.find { |team| 
+    team[:players].collect{ |player_stats| player_stats[:player_name] }.include?(player)
+  }
+end
+
+def player_stats(player)
+  team = find_team_of_player(player)
+  team[:players].find { |player_stats| player_stats.has_value?(player) }
+end
+
+def find_team_by_name(team)
+  game_hash.values.find { |team_info| team_info.has_value?(team) }
+end
+
+
+# normal functions
+
+def num_points_scored(player)
+  player_stats(player)[:points]
+end
+
+def shoe_size(player)
+  player_stats(player)[:shoe]
+end
+
+def team_colors(team)
+  find_team_by_name(team)[:colors]
+end
+
+def team_names 
+  game_hash.values.collect { |team| team[:team_name] }
+end
+
+def player_numbers(team)
+  find_team_by_name(team)[:players].collect { |player| player[:number] }
+end
+
+def big_shoe_rebounds
+  all_players = game_hash.values.collect { |team| team[:players] }
+  all_players = all_players[0].concat(all_players[1])
+  all_players.collect{ |player_stats|
+    { shoe: player_stats[:shoe], rebounds: player_stats[:rebounds] }
+  }
+  .sort_by { |shoe_and_rebounds| shoe_and_rebounds[:shoe] }.last[:rebounds]
+end
